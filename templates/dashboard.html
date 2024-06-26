@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+    }
+    .navbar {
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        padding: 10px 0;
+    }
+    .container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding: 20px;
+    }
+    .column {
+        background-color: #f4f4f4;
+        padding: 20px;
+        border-radius: 5px;
+    }
+    .alert-button {
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+    }
+    .alert-button:hover {
+        background-color: #45a049;
+    }
+</style>
+</head>
+<body>
+<div class="navbar">
+    <h1>Dashboard</h1>
+</div>
+<div class="container">
+    <div class="column" id="leakagePresenceColumn">
+        <h2>Leakage Presence</h2>
+        <p id="leakagePresence"> present </p>
+    </div>
+    <div class="column" id="coordinatesColumn">
+        <h2>Coordinates</h2>
+        <p id="coordinates">76.3456 , -82.3452</p>
+    </div>
+    <div class="column" id="buttonColumn">
+        <h2>Button</h2>
+        <p>Send alert to field managers</p>
+        <button class="alert-button" id="sendAlertBtn">Send Alert</button>
+    </div>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    // Function to fetch data when the "Send Alert" button is clicked
+    document.getElementById('sendAlertBtn').addEventListener('click', function() {
+        fetch('http://192.168.16.218:3000/email')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Process the fetched data here, if needed
+            console.log(data);
+            // For demonstration purposes, let's update the text content of the "Leakage Presence" column
+            document.getElementById('leakagePresence').textContent = data.leakagePresence;
+            document.getElementById('coordinates').textContent = data.coordinates;
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+    });
+});
+</script>
+</body>
+</html>
